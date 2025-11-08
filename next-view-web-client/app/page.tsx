@@ -1,3 +1,3 @@
 export default function Home() {
-  return <main className=''>NextView</main>;
+  return <main className=''></main>;
 }

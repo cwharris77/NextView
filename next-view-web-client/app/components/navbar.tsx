@@ -4,7 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { onAuthStateChangedHelper } from "../utils/firebase/firebase";
-import SignIn from "./sign-in";
+import SignIn from "./Sign-In";
+import Upload from "./Upload";
 
 export default function Navbar() {
   const [user, setUser] = useState<User | null>(null);
@@ -23,10 +24,11 @@ export default function Navbar() {
         <Image
           src='/next-view-logo.svg'
           alt='Next View Logo'
-          width={90}
+          width={70}
           height={50}
         />
       </Link>
+      {user && <Upload />}
       <SignIn user={user} />
     </nav>
   );

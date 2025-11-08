@@ -26,7 +26,7 @@ body {
 }
 
 .signin-button {
-  @apply inline-block border border-solid border-gray-500 rounded-3xl font-serif text-sm font-medium cursor-pointer px-7 py-2;
+  @apply inline-block border border-solid border-gray-500 rounded-3xl font-serif text-sm font-medium cursor-pointer px-4 py-2;
   @apply hover:bg-blue-200 hover:border-transparent;
   color: #065fd4;
 }
