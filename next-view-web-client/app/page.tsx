@@ -1,9 +1,11 @@
-import VideoView from "./components/VideoView";
+import VideosView from "./components/VideosView";
 
 export default async function Home() {
   return (
     <main className=''>
-      <VideoView />
+      <VideosView />
     </main>
   );
 }
+
+export const revalidate = 30;

@@ -1,3 +1,5 @@
+import type { Timestamp } from "firebase-admin/firestore";
+
 export interface Video {
   id?: string;
   uid?: string;
@@ -5,7 +7,7 @@ export interface Video {
   status?: "processing" | "processed";
   title?: string;
   description?: string;
-  createdAt?: FirebaseFirestore.Timestamp;
+  createdAt?: Timestamp;
 }
 
 export interface GetVideosResponse {
