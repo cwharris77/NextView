@@ -1,0 +1,9 @@
+{
+  "private": true,
+  "workspaces": [
+    "next-view-api-service",
+    "next-view-web-client",
+    "video-processing-service",
+    "shared"
+  ]
+}

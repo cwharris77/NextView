@@ -25,6 +25,7 @@ const firestore = getFirestore();
 const storage = new Storage();
 
 const rawVideoBucketName = "next-view-raw-videos";
+const videoCollectionId = "videos";
 
 export const createUser = functions.auth.user().onCreate(async (user) => {
   const userInfo = {
@@ -68,3 +69,26 @@ export const generateUploadUrl = onCall(
     return { url, fileName };
   }
 );
+
+export const getVideos = onCall({ maxInstances: 1 }, async (request) => {
+  const { limit = 10, lastCreatedAt } = request.data;
+
+  let query = firestore
+    .collection(videoCollectionId)
+    .orderBy("createdAt", "desc")
+    .limit(limit);
+
+  // if a cursor is provided start after it
+  if (lastCreatedAt) {
+    query = query.startAfter(lastCreatedAt);
+  }
+
+  const snapshot = await query.get();
+
+  const videos = snapshot.docs.map((doc) => doc.data());
+
+  const lastDoc = snapshot.docs[snapshot.docs.length - 1];
+  const nextCursor = lastDoc ? lastDoc.get("createdAt") : null;
+
+  return { videos, nextCursor };
+});

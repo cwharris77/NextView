@@ -1,20 +1,12 @@
 import { credential } from "firebase-admin";
 import { initializeApp } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
+import { Video } from "shared/types";
 
 initializeApp({ credential: credential.applicationDefault() });
 const firestore = getFirestore();
 
 const videoCollectionId = "videos";
-
-export interface Video {
-  id?: string;
-  uid?: string;
-  filename?: string;
-  status?: "processing" | "processed";
-  title?: string;
-  description?: string;
-}
 
 /**
  *
