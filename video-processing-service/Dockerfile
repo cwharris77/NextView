@@ -13,6 +13,8 @@ RUN npm install
 # Copy the rest of the application code
 COPY . .
 
+COPY ../shared ./shared
+
 # Build the TypeScript code
 RUN npm run build
 
