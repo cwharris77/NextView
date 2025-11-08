@@ -103,7 +103,7 @@ export const getVideos = onCall(
         return {
           id: doc.id,
           ...data,
-          createdAt: data.createdAt.toDate.toISOString(),
+          createdAt: data.createdAt.toDate().toISOString(),
         };
       });
 

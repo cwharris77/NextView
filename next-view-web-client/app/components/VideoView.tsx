@@ -16,10 +16,21 @@ export default function VideoView() {
     if (loading) return;
     setLoading(true);
     try {
-      const { videos, nextCursor: newCursor } = await getVideos(10, nextCursor);
+      const { videos: newVideos, nextCursor: newCursor } = await getVideos(
+        10,
+        nextCursor
+      );
       setNextCursor(newCursor);
-      setVideos((prev) => [...prev, ...videos]);
-      console.log("videos " + videos);
+      setVideos((prev) => {
+        const combined = [...prev, ...newVideos];
+
+        // Remove duplicates by id
+        const uniqueVideos = Array.from(
+          new Map(combined.map((v) => [v.id, v])).values()
+        );
+
+        return uniqueVideos;
+      });
     } catch (err) {
       console.error("Error loading videos:", err);
     } finally {
@@ -33,17 +44,19 @@ export default function VideoView() {
   }, []);
 
   return (
-    <main className='flex flex-col gap-4 p-4'>
-      {videos.map((video) => (
-        <Link href={`/watch?v=${video.filename}`} key={video.filename}>
-          <Image
-            src={"/default_thumbnail.png"}
-            alt='video'
-            width={120}
-            height={80}
-          />
-        </Link>
-      ))}
+    <div className='flex flex-col gap-4 p-4'>
+      <div className='flex gap-5'>
+        {videos.map((video) => (
+          <Link href={`/watch?v=${video.filename}`} key={video.id}>
+            <Image
+              src={"/default_thumbnail.png"}
+              alt='video'
+              width={120}
+              height={80}
+            />
+          </Link>
+        ))}
+      </div>
 
       {nextCursor && (
         <button
@@ -54,6 +67,6 @@ export default function VideoView() {
           {loading ? "Loading..." : "Load More"}
         </button>
       )}
-    </main>
+    </div>
   );
 }
