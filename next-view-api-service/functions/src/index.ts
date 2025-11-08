@@ -96,6 +96,8 @@ export const getVideos = onCall(
       // Process documents
       const videos: Video[] = snapshot.docs.map((doc) => doc.data());
 
+      console.log("videos here: " + videos);
+
       // Store last document as cursor for next page
       const newLastDoc =
         snapshot.docs.length > 0

@@ -22,6 +22,7 @@ export default function VideoView() {
       const { videos, nextCursor: newCursor } = await getVideos(10, nextCursor);
       setNextCursor(newCursor);
       setVideos((prev) => [...prev, ...videos]);
+      console.log("videos " + videos);
     } catch (err) {
       console.error("Error loading videos:", err);
     } finally {
