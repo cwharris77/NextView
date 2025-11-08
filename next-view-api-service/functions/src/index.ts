@@ -1,5 +1,7 @@
+import { Storage } from "@google-cloud/storage";
 import { initializeApp } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
+import { onCall } from "firebase-functions/https";
 import * as logger from "firebase-functions/logger";
 import * as functions from "firebase-functions/v1";
 
@@ -20,6 +22,9 @@ import * as functions from "firebase-functions/v1";
 
 initializeApp();
 const firestore = getFirestore();
+const storage = new Storage();
+
+const rawVideoBucketName = "next-view-raw-videos";
 
 export const createUser = functions.auth.user().onCreate(async (user) => {
   const userInfo = {
@@ -35,3 +40,31 @@ export const createUser = functions.auth.user().onCreate(async (user) => {
     logger.error("Error writing user to Firestore:", err);
   }
 });
+
+export const generateUploadUrl = onCall(
+  { maxInstances: 10 },
+  async (request) => {
+    if (!request.auth) {
+      throw new functions.https.HttpsError(
+        "failed-precondition",
+        "The function must be called while authenticated"
+      );
+    }
+
+    const auth = request.auth;
+    const data = request.data;
+    const bucket = storage.bucket(rawVideoBucketName);
+
+    // Generate a unique file name
+    const fileName = `${auth.uid}-${Date.now()}.${data.fileExtension}`;
+
+    // get a v4 signed URL for uploading file
+    const [url] = await bucket.file(fileName).getSignedUrl({
+      version: "v4",
+      action: "write",
+      expires: Date.now() + 15 * 60 * 1000, // 15 minutes
+    });
+
+    return { url, fileName };
+  }
+);
