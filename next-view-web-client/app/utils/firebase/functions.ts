@@ -1,4 +1,3 @@
-import { DocumentData, QueryDocumentSnapshot } from "firebase-admin/firestore";
 import { httpsCallable } from "firebase/functions";
 import { GetVideosResponse } from "../../types";
 import { functions } from "./firebase";
@@ -25,7 +24,7 @@ export async function uploadVideo(file: File) {
 
 export async function getVideos(
   limit = 10,
-  lastCursor?: QueryDocumentSnapshot<DocumentData, DocumentData> | undefined
+  lastCursor?: string | undefined
 ): Promise<GetVideosResponse> {
   try {
     const response = await getVideosFunction({

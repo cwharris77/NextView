@@ -1,5 +1,3 @@
-import { DocumentData, QueryDocumentSnapshot } from "@google-cloud/firestore";
-
 export interface Video {
   id?: string;
   uid?: string;
@@ -12,5 +10,5 @@ export interface Video {
 
 export interface GetVideosResponse {
   videos: Video[];
-  nextCursor?: QueryDocumentSnapshot<DocumentData, DocumentData> | undefined;
+  nextCursor?: string | undefined;
 }

@@ -1,6 +1,5 @@
 "use client";
 
-import { DocumentData, QueryDocumentSnapshot } from "firebase-admin/firestore";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -9,9 +8,7 @@ import { getVideos } from "../utils/firebase/functions";
 
 export default function VideoView() {
   const [videos, setVideos] = useState<Video[]>([]);
-  const [nextCursor, setNextCursor] = useState<
-    QueryDocumentSnapshot<DocumentData, DocumentData> | undefined
-  >(undefined);
+  const [nextCursor, setNextCursor] = useState<string | undefined>(undefined);
   const [loading, setLoading] = useState(false);
 
   // Function to load videos

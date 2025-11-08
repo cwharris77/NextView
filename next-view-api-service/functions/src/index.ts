@@ -85,7 +85,11 @@ export const getVideos = onCall(
 
       // Fetch first page or subsequent pages
       if (lastDoc) {
-        query = query.startAfter(lastDoc);
+        const lastSnapshot = await firestore
+          .collection(videoCollectionId)
+          .doc(lastDoc)
+          .get();
+        query = query.startAfter(lastSnapshot);
       }
 
       query = query.limit(pageSize);
@@ -94,14 +98,19 @@ export const getVideos = onCall(
       const snapshot = await query.get();
 
       // Process documents
-      const videos: Video[] = snapshot.docs.map((doc) => doc.data());
-
-      console.log("videos here: " + videos);
+      const videos: Video[] = snapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          ...data,
+          createdAt: data.createdAt.toDate.toISOString(),
+        };
+      });
 
       // Store last document as cursor for next page
       const newLastDoc =
         snapshot.docs.length > 0
-          ? snapshot.docs[snapshot.docs.length - 1]
+          ? snapshot.docs[snapshot.docs.length - 1].id
           : undefined;
 
       logger.info(`Fetched ${videos.length} videos`);
