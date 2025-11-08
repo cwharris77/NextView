@@ -1,0 +1,12 @@
+steps:
+  # Build Docker image from dockerfile
+  - name: "gcr.io/cloud-builders/docker"
+    args: ["build", "-t", "gcr.io/$PROJECT_ID/video-processing-service", "."]
+    dir: "video-processing-service"
+
+  # Push Docker image to Google Container Registry
+  - name: "gcr.io/cloud-builders/docker"
+    args: ["push", "gcr.io/$PROJECT_ID/video-processing-service"]
+
+options:
+  logging: CLOUD_LOGGING_ONLY
