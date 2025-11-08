@@ -1,7 +1,7 @@
 import { credential } from "firebase-admin";
 import { initializeApp } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
-import { Video } from "shared/types";
+import { Video } from "shared";
 
 initializeApp({ credential: credential.applicationDefault() });
 const firestore = getFirestore();

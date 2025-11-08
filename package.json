@@ -1,9 +1,15 @@
 {
   "private": true,
   "workspaces": [
-    "next-view-api-service",
-    "next-view-web-client",
-    "video-processing-service",
-    "shared"
-  ]
+    "next-view-api-service/*",
+    "next-view-web-client/*",
+    "video-processing-service/*",
+    "shared/*"
+  ],
+  "scripts": {
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
 }
