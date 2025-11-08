@@ -7,6 +7,7 @@ import {
   signInWithPopup,
   User,
 } from "firebase/auth";
+import { getFunctions } from "firebase/functions";
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -25,6 +26,7 @@ const app = initializeApp(firebaseConfig);
 // const analytics = getAnalytics(app);
 
 const auth = getAuth(app);
+export const functions = getFunctions();
 
 /**
  * Signs in the user with their Google account.

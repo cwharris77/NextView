@@ -1,1 +1,1 @@
-export { Video } from "./types";
+export { GetVideosResponse, Video } from "./types";

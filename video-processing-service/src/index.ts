@@ -1,4 +1,5 @@
 import express from "express";
+import { Timestamp } from "firebase-admin/firestore";
 import { isVideoNew, setVideo } from "./firestore";
 import {
   convertVideo,
@@ -72,6 +73,7 @@ app.post("/process-video", async (req, res) => {
   await setVideo(videoId, {
     status: "processed",
     filename: outputFileName,
+    createdAt: Timestamp.now(),
   });
 
   // clean up local files

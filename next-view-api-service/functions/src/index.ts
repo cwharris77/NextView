@@ -4,7 +4,7 @@ import { getFirestore } from "firebase-admin/firestore";
 import { onCall } from "firebase-functions/https";
 import * as logger from "firebase-functions/logger";
 import * as functions from "firebase-functions/v1";
-
+import { GetVideosResponse, Video } from "shared";
 // Start writing functions
 // https://firebase.google.com/docs/functions/typescript
 
@@ -70,25 +70,43 @@ export const generateUploadUrl = onCall(
   }
 );
 
-export const getVideos = onCall({ maxInstances: 1 }, async (request) => {
-  const { limit = 10, lastCreatedAt } = request.data;
+export const getVideos = onCall(
+  { maxInstances: 1 },
+  async (request): Promise<GetVideosResponse> => {
+    try {
+      const pageSize = 10;
+      const { lastDoc } = request.data ?? {}; // Cursor for pagination
 
-  let query = firestore
-    .collection(videoCollectionId)
-    .orderBy("createdAt", "desc")
-    .limit(limit);
+      // Order your data
+      let query = firestore
+        .collection(videoCollectionId)
+        .orderBy("createdAt", "desc");
 
-  // if a cursor is provided start after it
-  if (lastCreatedAt) {
-    query = query.startAfter(lastCreatedAt);
+      // Fetch first page or subsequent pages
+      if (lastDoc) {
+        query = query.startAfter(lastDoc);
+      }
+
+      query = query.limit(pageSize);
+
+      // Execute query
+      const snapshot = await query.get();
+
+      // Process documents
+      const videos: Video[] = snapshot.docs.map((doc) => doc.data());
+
+      // Store last document as cursor for next page
+      const newLastDoc =
+        snapshot.docs.length > 0
+          ? snapshot.docs[snapshot.docs.length - 1]
+          : undefined;
+
+      logger.info(`Fetched ${videos.length} videos`);
+
+      return { videos, nextCursor: newLastDoc };
+    } catch (error) {
+      logger.error("Error fetching videos:", error);
+      return { videos: [], nextCursor: undefined };
+    }
   }
-
-  const snapshot = await query.get();
-
-  const videos = snapshot.docs.map((doc) => doc.data());
-
-  const lastDoc = snapshot.docs[snapshot.docs.length - 1];
-  const nextCursor = lastDoc ? lastDoc.get("createdAt") : null;
-
-  return { videos, nextCursor };
-});
+);
