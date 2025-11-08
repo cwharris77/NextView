@@ -4,7 +4,7 @@ import { DocumentData, QueryDocumentSnapshot } from "firebase-admin/firestore";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Video } from "shared";
+import { Video } from "../types";
 import { getVideos } from "../utils/firebase/functions";
 
 export default function VideoView() {

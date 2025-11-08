@@ -4,7 +4,8 @@ import { getFirestore } from "firebase-admin/firestore";
 import { onCall } from "firebase-functions/https";
 import * as logger from "firebase-functions/logger";
 import * as functions from "firebase-functions/v1";
-import { GetVideosResponse, Video } from "shared";
+import { GetVideosResponse, Video } from "./types";
+
 // Start writing functions
 // https://firebase.google.com/docs/functions/typescript
 

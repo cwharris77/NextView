@@ -1,6 +1,6 @@
 import { DocumentData, QueryDocumentSnapshot } from "firebase-admin/firestore";
 import { httpsCallable } from "firebase/functions";
-import { GetVideosResponse } from "shared";
+import { GetVideosResponse } from "../../types";
 import { functions } from "./firebase";
 
 const generateUploadUrl = httpsCallable(functions, "generateUploadUrl");

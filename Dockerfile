@@ -1,32 +1,19 @@
 # Build stage
 FROM node:18-alpine AS builder
 
+# Set the working directory in the container
 WORKDIR /app
 
-# Copy root package files for workspace resolution
+# Copy package.json and package-lock.json files
 COPY package*.json ./
 
-# Copy shared package
-COPY shared ./shared
-
-# Copy video-processing-service package
-COPY video-processing-service ./video-processing-service
-
-# Install ALL dependencies from root
+# Install project dependencies
 RUN npm install
 
-# Explicitly install shared dependencies
-WORKDIR /app/shared
-RUN npm install
+# Copy the rest of the application code
+COPY . .
 
-# Build shared
-RUN npm run build
-
-# Explicitly install video-processing-service dependencies
-WORKDIR /app/video-processing-service
-RUN npm install
-
-# Build video-processing-service
+# Build the TypeScript code
 RUN npm run build
 
 # Production stage
@@ -35,26 +22,19 @@ FROM node:18-alpine AS production
 # Install ffmpeg in the container
 RUN apk add --no-cache ffmpeg
 
-WORKDIR /app
+# Set the working directory in the container
+WORKDIR /app    
 
-# Copy root package files
+# Copy only the necessary files from the builder stage
 COPY package*.json ./
 
-# Copy the workspace directories (needed for npm to recognize workspaces)
-COPY shared/package*.json ./shared/
-COPY video-processing-service/package*.json ./video-processing-service/
+# Copy production dependencies
+RUN npm install --only=production
 
-# Install production dependencies
-RUN npm install --omit=dev
+# Copy the built application code from the builder stage
+COPY --from=builder /app/dist ./dist
 
-# Copy built artifacts from builder stage
-COPY --from=builder /app/shared/dist ./shared/dist
-COPY --from=builder /app/video-processing-service/dist ./video-processing-service/dist
-
-# Set working directory to the service
-WORKDIR /app/video-processing-service
-
-# Make port 8080 available
+# Make port 8080 available outside this container
 EXPOSE 8080
 
 # Start the application
