@@ -6,7 +6,7 @@ export default function Navbar() {
     <nav className='flex justify-between items-center p-[1em]'>
       <Link href='/' className='cursor-pointer'>
         <Image
-          src='/next-view-logo.png'
+          src='/next-view-logo.svg'
           alt='Next View Logo'
           width={90}
           height={50}
