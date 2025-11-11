@@ -1,13 +1,7 @@
 steps:
-  # Install dependencies and deploy Firebase Functions
-  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
-    entrypoint: "bash"
-    args:
-      - "-c"
-      - |
-        cd next-view-api-service/functions
-        npm ci
-        firebase deploy --only functions --project $PROJECT_ID
+- name: "us-docker.pkg.dev/firebase-cli/us/firebase"
+   args: ['deploy', '--project=next-view-9b064', '--only=functions']
+
 
 options:
   logging: CLOUD_LOGGING_ONLY
