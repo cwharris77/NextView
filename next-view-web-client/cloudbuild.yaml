@@ -1,0 +1,39 @@
+steps:
+  # Build Docker image for Next.js app
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "build",
+        "-t",
+        "us-west1-docker.pkg.dev/$PROJECT_ID/next-view-web-client-repo/next-view-web-client",
+        ".",
+      ]
+    dir: "next-view-web-client"
+
+  # Push Docker image to Artifact Registry
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "push",
+        "us-west1-docker.pkg.dev/$PROJECT_ID/next-view-web-client-repo/next-view-web-client",
+      ]
+
+  # Deploy to Cloud Run
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - |
+        gcloud run deploy next-view-web-client \
+          --image us-west1-docker.pkg.dev/$PROJECT_ID/next-view-web-client-repo/next-view-web-client \
+          --region us-west1 \
+          --platform managed \
+          --timeout=3600 \
+          --memory=512Mi \
+          --cpu=1 \
+          --min-instances=0 \
+          --max-instances=1 \
+          --allow-unauthenticated
+
+options:
+  logging: CLOUD_LOGGING_ONLY

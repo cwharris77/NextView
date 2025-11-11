@@ -1,0 +1,13 @@
+steps:
+  # Install dependencies and deploy Firebase Functions
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - |
+        cd next-view-api-service/functions
+        npm ci
+        firebase deploy --only functions --project $PROJECT_ID
+
+options:
+  logging: CLOUD_LOGGING_ONLY

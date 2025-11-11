@@ -16,6 +16,9 @@ steps:
       - |
         gcloud run deploy video-processing-service \
           --image gcr.io/$PROJECT_ID/video-processing-service \
+          --min-instances=0 \
+          --max-instances=1 \
+          --cpu=1 \
           --region us-west1 \
           --platform managed \
           --allow-unauthenticated
