@@ -92,13 +92,15 @@ export const getVideos = onCall(
         query = query.startAfter(lastSnapshot);
       }
 
-      query = query.limit(pageSize);
+      query = query.limit(pageSize + 1); // peek ahead query to determine if there's more to load
 
       // Execute query
       const snapshot = await query.get();
 
+      const hasMore = snapshot.docs.length > pageSize;
+
       // Process documents
-      const videos: Video[] = snapshot.docs.map((doc) => {
+      const videos: Video[] = snapshot.docs.slice(0, pageSize).map((doc) => {
         const data = doc.data();
         return {
           id: doc.id,
@@ -107,15 +109,14 @@ export const getVideos = onCall(
         };
       });
 
-      // Store last document as cursor for next page
-      const newLastDoc =
-        snapshot.docs.length > 0
-          ? snapshot.docs[snapshot.docs.length - 1].id
-          : undefined;
+      // Store last document id as cursor for next page
+      const nextCursor = hasMore // only set next cursor if there is more data to fetch afterwards
+        ? snapshot.docs[pageSize - 1].id
+        : undefined;
 
       logger.info(`Fetched ${videos.length} videos`);
 
-      return { videos, nextCursor: newLastDoc };
+      return { videos, nextCursor };
     } catch (error) {
       logger.error("Error fetching videos:", error);
       return { videos: [], nextCursor: undefined };

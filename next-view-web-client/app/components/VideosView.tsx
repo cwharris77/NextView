@@ -44,7 +44,7 @@ export default function VideoView() {
   }, []);
 
   return (
-    <div className='flex flex-col gap-4 p-4'>
+    <div className='w-full flex flex-col gap-4 p-4 flex-wrap justify-center items-center'>
       <div className='flex gap-5'>
         {videos.map((video) => (
           <Link href={`/watch?v=${video.filename}`} key={video.id}>
@@ -62,7 +62,7 @@ export default function VideoView() {
         <button
           onClick={loadVideos}
           disabled={loading}
-          className='mt-4 px-4 py-2 bg-blue-500 text-white rounded'
+          className='mt-4 px-4 py-2 bg-blue-500 text-white rounded max-w-1/6'
         >
           {loading ? "Loading..." : "Load More"}
         </button>

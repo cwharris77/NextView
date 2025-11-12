@@ -1,7 +1,6 @@
 steps:
-- name: "us-docker.pkg.dev/firebase-cli/us/firebase"
-   args: ['deploy', '--project=next-view-9b064', '--only=functions']
-
+  - name: us-docker.pkg.dev/firebase-cli/us/firebase
+    args: ["deploy", "--project=next-view-9b064", "--only=functions"]
 
 options:
   logging: CLOUD_LOGGING_ONLY
