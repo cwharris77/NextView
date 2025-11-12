@@ -1,6 +1,17 @@
 steps:
   - name: us-docker.pkg.dev/firebase-cli/us/firebase
-    args: ["deploy", "--project=next-view-9b064", "--only=functions"]
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - |
+        # Move to the folder containing firebase.json
+        cd next-view-api-service
+
+        # Install Node.js dependencies for functions
+        npm ci --prefix functions
+
+        # Deploy only functions to Firebase project
+        firebase deploy --project=next-view-9b064 --only=functions
 
 options:
   logging: CLOUD_LOGGING_ONLY

@@ -1,5 +1,5 @@
 "use client";
-import { User } from "@firebase/auth";
+import { User } from "firebase/auth";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
