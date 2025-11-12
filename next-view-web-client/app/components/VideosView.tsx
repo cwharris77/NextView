@@ -47,7 +47,7 @@ export default function VideoView() {
     <div className='w-full flex flex-col gap-4 p-4 flex-wrap justify-center items-center'>
       <div className='flex gap-5'>
         {videos.map((video) => (
-          <Link href={`/watch?v=${video.filename}`} key={video.id}>
+          <Link href={`/watch/${video.id}`} key={video.id}>
             <Image
               src={"/default_thumbnail.png"}
               alt='video'
