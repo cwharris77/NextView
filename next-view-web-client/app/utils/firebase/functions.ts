@@ -1,9 +1,10 @@
 import { httpsCallable } from "firebase/functions";
-import { GetVideosResponse } from "../../types";
+import { GetVideosResponse, Video } from "../../types";
 import { functions } from "./firebase";
 
 const generateUploadUrl = httpsCallable(functions, "generateUploadUrl");
 const getVideosFunction = httpsCallable(functions, "getVideos");
+const getVideoByIdFunction = httpsCallable(functions, "getVideoById");
 
 export async function uploadVideo(file: File) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -41,5 +42,20 @@ export async function getVideos(
   } catch (error) {
     console.error("Error calling getVideos function", error);
     return { videos: [], nextCursor: undefined };
+  }
+}
+
+export async function getVideoById(id: string) {
+  try {
+    const response = await getVideoByIdFunction({ id: id });
+
+    if (!response.data) {
+      throw new Error(`No video with id: ${id} found`);
+    }
+
+    return response.data as Video;
+  } catch (err) {
+    console.error(err);
+    return null;
   }
 }

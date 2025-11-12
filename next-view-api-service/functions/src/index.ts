@@ -1,6 +1,7 @@
 import { Storage } from "@google-cloud/storage";
 import { initializeApp } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
+import { https } from "firebase-functions";
 import { onCall } from "firebase-functions/https";
 import * as logger from "firebase-functions/logger";
 import * as functions from "firebase-functions/v1";
@@ -120,6 +121,38 @@ export const getVideos = onCall(
     } catch (error) {
       logger.error("Error fetching videos:", error);
       return { videos: [], nextCursor: undefined };
+    }
+  }
+);
+
+export const getVideoById = onCall(
+  { minInstances: 0, maxInstances: 1 },
+  async (request) => {
+    const { data } = request;
+    console.log(data);
+    try {
+      const id = data?.id;
+      if (!id || typeof id !== "string") {
+        throw new https.HttpsError(
+          "invalid-argument",
+          "Missing or invalid video ID"
+        );
+      }
+
+      const doc = await firestore.collection("videos").doc(id).get();
+
+      if (!doc.exists) {
+        throw new https.HttpsError("not-found", "Video not found");
+      }
+      const docData = doc.data();
+      return {
+        id: doc.id,
+        ...docData,
+        createdAt: docData?.createdAt.toDate().toISOString(),
+      };
+    } catch (err) {
+      console.error(err);
+      return null;
     }
   }
 );
