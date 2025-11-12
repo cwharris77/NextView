@@ -41,5 +41,5 @@ export function setVideo(videoId: string, video: Video) {
  */
 export async function isVideoNew(videoId: string) {
   const video = await getVideo(videoId);
-  return video?.status === undefined;
+  return video?.status === undefined || "processed";
 }
