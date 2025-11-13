@@ -76,21 +76,27 @@ export const getVideos = onCall(
   { maxInstances: 1 },
   async (request): Promise<GetVideosResponse> => {
     try {
-      const pageSize = 10;
+      const pageSize = request.data?.pageSize ?? 10;
       const { lastDoc } = request.data ?? {}; // Cursor for pagination
 
-      // Order your data
+      // Order data
       let query = firestore
         .collection(videoCollectionId)
         .orderBy("createdAt", "desc");
 
       // Fetch first page or subsequent pages
       if (lastDoc) {
+        // Need to get the actual document to retrieve its createdAt timestamp
         const lastSnapshot = await firestore
           .collection(videoCollectionId)
           .doc(lastDoc)
           .get();
-        query = query.startAfter(lastSnapshot);
+
+        if (lastSnapshot.exists) {
+          // Pass the actual Timestamp object from the document
+          const lastCreatedAt = lastSnapshot.data()?.createdAt;
+          query = query.startAfter(lastCreatedAt);
+        }
       }
 
       query = query.limit(pageSize + 1); // peek ahead query to determine if there's more to load
@@ -111,9 +117,7 @@ export const getVideos = onCall(
       });
 
       // Store last document id as cursor for next page
-      const nextCursor = hasMore // only set next cursor if there is more data to fetch afterwards
-        ? snapshot.docs[pageSize - 1].id
-        : undefined;
+      const nextCursor = hasMore ? videos[videos.length - 1].id : undefined;
 
       logger.info(`Fetched ${videos.length} videos`);
 

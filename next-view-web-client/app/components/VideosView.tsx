@@ -16,10 +16,10 @@ export default function VideoView() {
     if (loading) return;
     setLoading(true);
     try {
-      const { videos: newVideos, nextCursor: newCursor } = await getVideos(
-        10,
-        nextCursor
-      );
+      const { videos: newVideos, nextCursor: newCursor } = await getVideos({
+        lastCursor: nextCursor, // nextCursor starts undefined but if there are more videos to fetch
+        // getVideos will return a valid cursor
+      });
       setNextCursor(newCursor);
       setVideos((prev) => {
         const combined = [...prev, ...newVideos];
@@ -62,7 +62,7 @@ export default function VideoView() {
         <button
           onClick={loadVideos}
           disabled={loading}
-          className='mt-4 px-4 py-2 bg-blue-500 text-white rounded max-w-1/6'
+          className='mt-4 px-4 py-2 bg-blue-500 text-white rounded max-w-1/6 cursor-pointer'
         >
           {loading ? "Loading..." : "Load More"}
         </button>

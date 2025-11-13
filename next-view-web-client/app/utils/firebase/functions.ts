@@ -23,14 +23,17 @@ export async function uploadVideo(file: File) {
   return;
 }
 
-export async function getVideos(
+export async function getVideos({
   limit = 10,
-  lastCursor?: string | undefined
-): Promise<GetVideosResponse> {
+  lastCursor,
+}: {
+  limit?: number;
+  lastCursor?: string | undefined;
+}): Promise<GetVideosResponse> {
   try {
     const response = await getVideosFunction({
-      limit,
-      nextCursor: lastCursor,
+      pageSize: limit,
+      lastDoc: lastCursor,
     });
 
     if (!response?.data) {
