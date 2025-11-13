@@ -21,16 +21,7 @@ export default function VideoView() {
         // getVideos will return a valid cursor
       });
       setNextCursor(newCursor);
-      setVideos((prev) => {
-        const combined = [...prev, ...newVideos];
-
-        // Remove duplicates by id
-        const uniqueVideos = Array.from(
-          new Map(combined.map((v) => [v.id, v])).values()
-        );
-
-        return uniqueVideos;
-      });
+      setVideos([...videos, ...newVideos]);
     } catch (err) {
       console.error("Error loading videos:", err);
     } finally {
